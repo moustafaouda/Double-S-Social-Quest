@@ -14,7 +14,7 @@ U2.games=[
  {id:'g1',em:'🐸',col:'#16a34a',kind:'Froggy Jumps',name:'قَفَزَاتُ الضِّفْدَعِ',how:'اقْفِزْ عَلَى الْإِجَابَةِ الصَّحِيحَةِ قَبْلَ أَنْ يَنْتَهِيَ الْوَقْتُ.',url:'https://www.educaplay.com/learning-resources/31646353-learning_resource.html'},
  {id:'g2',em:'🧩',col:'#0ea5e9',kind:'Line Up',name:'رَتِّبِ الْأَحْدَاثَ',how:'رَتِّبِ الْخُطُوَاتِ وَالْأَحْدَاثَ بِالتَّرْتِيبِ الصَّحِيحِ.',url:'https://www.educaplay.com/learning-resources/31647167-learning_resource.html'},
  {id:'g3',em:'🃏',col:'#a855f7',kind:'Memory',name:'لُعْبَةُ الذَّاكِرَةِ',how:'اقْلِبِ الْبِطَاقَاتِ، وَطَابِقْ كُلَّ كَلِمَةٍ مَعَ مَعْنَاهَا.',url:'https://www.educaplay.com/learning-resources/31647938-learning_resource.html'},
- {id:'g4',em:'✅',col:'#f59e0b',kind:'Yes or No',name:'نَعَمْ أَمْ لَا؟',how:'اقْرَأِ الْعِبَارَةَ، وَقَرِّرْ: صَوَابٌ أَمْ خَطَأٌ؟',url:''},
+ {id:'g4',em:'✅',col:'#f59e0b',kind:'Yes or No',name:'نَعَمْ أَمْ لَا؟',how:'اقْرَأِ الْعِبَارَةَ، وَقَرِّرْ: صَوَابٌ أَمْ خَطَأٌ؟',url:'https://www.educaplay.com/learning-resources/31648484-learning_resource.html'},
  {id:'g5',em:'🧺',col:'#ef4444',kind:'Matching',name:'الْمُصَنِّفُ',how:'ضَعْ كُلَّ كَلِمَةٍ فِي مَجْمُوعَتِهَا الصَّحِيحَةِ.',url:''}];
 U2.rounds=[
  {t:'كَيْفَ نَشَأَتِ الْقُرَى وَالْمُدُنُ فِي مِصْرَ؟',s:['💧 اسْتَقَرَّ الْمِصْرِيُّونَ الْقُدَمَاءُ عَلَى ضِفَافِ نَهْرِ النِّيلِ','🌾 عَرَفُوا الزِّرَاعَةَ فِي التُّرْبَةِ الْخِصْبَةِ','🏠 بَنَوُا الْمَسَاكِنَ وَاسْتَقَرُّوا','🏘️ نَشَأَتِ الْقُرَى وَالْمُدُنُ']},
