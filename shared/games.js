@@ -24,12 +24,21 @@ function tween(g,x0,y0,x1,y1,ms=1500){const t0=performance.now();const f=t=>{con
 const near=(x,y,tx,ty,r=60)=>Math.hypot(x-tx,y-ty)<=r;
 const glowRing=(x,y,r=34,c='#f59e0b')=>`<g class="glow" pointer-events="none"><circle cx="${x}" cy="${y}" r="${r}" fill="${c}" opacity=".25"/><circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="${c}" stroke-width="5" stroke-dasharray="10 7"><animateTransform attributeName="transform" type="rotate" from="0 ${x} ${y}" to="360 ${x} ${y}" dur="6s" repeatCount="indefinite"/></circle></g>`;
 
-/* ---------- sorting game: one card at a time, tap the right basket ---------- */
-function sortGame(id){const D=SORTS[id];const items=shuffle(D.items).slice(0,calm()?8:D.items.length);let i=0,mist=0;
- const draw=()=>{if(i>=items.length)return finish(id,mist<=1?3:mist<=4?2:1,'صَنَّفْتَ كُلَّ الْبِطَاقَاتِ تَصْنِيفًا صَحِيحًا!');const it=items[i];let first=true;
-  $('act').innerHTML=head(id)+`<div class="card pop center">${i===0?sayBuzzy(D.t):''}<div style="font-weight:700;color:#8c5cff">الْبِطَاقَةُ ${ad(i+1)} مِنْ ${ad(items.length)}</div><div class="sortcard pop"><div style="font-size:70px">${it[0]}</div><div style="font-size:30px;font-weight:800">${it[1]}</div></div><div class="row" style="flex-wrap:wrap">${D.bins.map((b,k)=>`<button class="btn bin" data-k="${k}"><div style="font-size:40px">${b[0]}</div><div>${b[1]}</div></button>`).join('')}</div><div id="fb"></div></div>`;
-  (i===0?speakP(D.t):Promise.resolve()).then(()=>speakP(it[1]));
-  document.querySelectorAll('.bin').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;if(k===it[2]){b.classList.add('right');SFX.good();document.querySelectorAll('.bin').forEach(x=>x.disabled=true);const t=`${it[1]}: ${D.bins[k][1]}.`;factLine('fb','أَحْسَنْتَ! '+t,false);speakP('أَحْسَنْتَ!');nextBtn('fb','',()=>{i++;draw()})}else{if(first){mist++;try{actMissed.push(noTash(it[1]))}catch(e){}}first=false;b.classList.add('wrong','shake');b.disabled=true;SFX.bad();speak(WRONG_TRY)}})};draw()}
+/* ---------- sorting game: drag the drawn card into the right drawn basket; every comment is spoken ---------- */
+function sortGame(id){const D=SORTS[id];const items=shuffle(D.items).slice(0,calm()?7:D.items.length);let i=0,mist=0,done=0;const cnt=D.bins.map(()=>0);
+ $('act').innerHTML=head(id)+`<div class="card pop"><div class="msn">🧺 ${D.t}</div><div class="row" style="justify-content:space-between"><b id="sleft" style="font-size:20px"></b></div><div id="sstage" class="sstage"></div><div class="sbins" style="--n:${D.bins.length}">${D.bins.map((b,k)=>`<div class="sbin" data-k="${k}"><div class="sbinart">${BINART[id][k]()}</div><div class="sbinname">${b}</div><div class="sbincnt" id="bc${k}"></div></div>`).join('')}</div><div id="fb"></div></div>`;
+ speak(D.t);
+ const draw=()=>{if(i>=items.length)return finish(id,mist<=1?3:mist<=4?2:1,'صَنَّفْتَ كُلَّ الصُّوَرِ تَصْنِيفًا صَحِيحًا!');const it=items[i];let first=true,missHere=0;$('sleft').textContent=`🃏 ${ad(i+1)} / ${ad(items.length)}`;
+  $('sstage').innerHTML=`<div class="scard pop" id="sc">${SICON[it[0]]()}<div class="scardt">${it[1]}</div></div>`;$('fb').innerHTML='';
+  speakNext(it[1]);
+  const card=$('sc');let drag=null;
+  const tryBin=k=>{if(k==null)return false;const binEl=document.querySelector(`.sbin[data-k="${k}"]`);if(k===it[2]){SFX.good();cnt[k]++;$('bc'+k).textContent='✓'.repeat(cnt[k]);binEl.classList.add('ok');setTimeout(()=>binEl.classList.remove('ok'),700);card.remove();const t='أَحْسَنْتَ! '+it[3];factLine('fb',t).then(()=>{i++;later(draw,300)});return true}
+   if(first){mist++;try{actMissed.push(noTash(it[1]))}catch(e){}}first=false;missHere++;SFX.bad();binEl.classList.remove('shake');void binEl.offsetWidth;binEl.classList.add('shake');if(missHere>=2){oops('fb',it[3])}else{oops('fb',WRONG_TRY)}return false};
+  card.onpointerdown=e=>{e.preventDefault();const r=card.getBoundingClientRect();drag={dx:e.clientX-r.left,dy:e.clientY-r.top};card.setPointerCapture(e.pointerId);card.classList.add('dragging');card.style.left=r.left+'px';card.style.top=r.top+'px';card.style.width=r.width+'px'};
+  card.onpointermove=e=>{if(!drag)return;card.style.left=(e.clientX-drag.dx)+'px';card.style.top=(e.clientY-drag.dy)+'px';document.querySelectorAll('.sbin').forEach(b=>{const r=b.getBoundingClientRect();b.classList.toggle('hover',e.clientX>r.left&&e.clientX<r.right&&e.clientY>r.top&&e.clientY<r.bottom)})};
+  card.onpointerup=e=>{if(!drag)return;drag=null;let hit=null;document.querySelectorAll('.sbin').forEach(b=>{const r=b.getBoundingClientRect();b.classList.remove('hover');if(e.clientX>r.left&&e.clientX<r.right&&e.clientY>r.top&&e.clientY<r.bottom)hit=+b.dataset.k});if(!tryBin(hit)){card.classList.remove('dragging');card.style.left=card.style.top=card.style.width=''}};
+  document.querySelectorAll('.sbin').forEach(b=>b.onclick=()=>{if(card.isConnected)tryBin(+b.dataset.k)})};
+ draw()}
 
 /* ---------- matching game: tap an item on the right, then its partner on the left ---------- */
 function matchGame(id){const D=MATCH[id];const pairs=D.pairs;let sel=null,done=0,mist=0;const L=shuffle(pairs.map((p,k)=>k)),R=shuffle(pairs.map((p,k)=>k));
@@ -37,6 +46,6 @@ function matchGame(id){const D=MATCH[id];const pairs=D.pairs;let sel=null,done=0
  speak(D.t);
  document.querySelectorAll('.mcard').forEach(b=>b.onclick=()=>{if(b.classList.contains('done'))return;const s=b.dataset.s,k=+b.dataset.k;
   if(!sel||sel.dataset.s===s){document.querySelectorAll('.mcard').forEach(x=>x.classList.remove('sel'));sel=b;b.classList.add('sel');SFX.click();speak(s==='a'?pairs[k][1]:pairs[k][3]);return}
-  if(+sel.dataset.k===k){[sel,b].forEach(x=>{x.classList.remove('sel');x.classList.add('done')});SFX.good();done++;const t=`${pairs[k][1]} ⬅ ${pairs[k][3]}`;factLine('fb',t,false);speak(`${pairs[k][1]}، ثُمَّ ${pairs[k][3]}`);sel=null;if(done===pairs.length)later(()=>finish(id,mist<=1?3:mist<=3?2:1,'وَصَلْتَ كُلَّ أَدَاةٍ قَدِيمَةٍ بِالْجِهَازِ الْحَدِيثِ!'),2600)}
+  if(+sel.dataset.k===k){[sel,b].forEach(x=>{x.classList.remove('sel');x.classList.add('done')});SFX.good();done++;const t=`قَدِيمًا: ${pairs[k][1]}، وَحَدِيثًا: ${pairs[k][3]}.`;factLine('fb',t);sel=null;if(done===pairs.length)later(()=>finish(id,mist<=1?3:mist<=3?2:1,'وَصَلْتَ كُلَّ أَدَاةٍ قَدِيمَةٍ بِالْجِهَازِ الْحَدِيثِ!'),2600)}
   else{mist++;SFX.bad();b.classList.add('shake');setTimeout(()=>b.classList.remove('shake'),500);speak(WRONG_TRY)}})}
 Object.assign(ACTS,{sort:sortGame,match:matchGame});

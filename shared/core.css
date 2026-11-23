@@ -8,7 +8,7 @@ body{font-family:'Baloo Bhaijaan 2',system-ui,sans-serif;color:var(--ink);overfl
 .bg-music{background:linear-gradient(135deg,#5b3cff,#a54cff 45%,#ff63ad)}
 .float{position:absolute;bottom:-80px;font-size:46px;opacity:.45;animation:up linear infinite}
 @keyframes up{to{transform:translateY(-130vh) rotate(340deg)}}
-#app{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:14px 18px 50px}
+#app{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:14px 18px 50px}
 .top{display:flex;align-items:center;gap:10px;background:#ffffffe6;border-radius:24px;padding:6px 12px;margin-bottom:16px;flex-wrap:wrap;box-shadow:0 6px 0 #0002}
 .top .who{display:flex;align-items:center;gap:6px;font-weight:800;font-size:22px}
 .top .who svg{width:44px;height:52px}
@@ -184,3 +184,34 @@ input.name{text-align:center}
 .mcard.sel{border-color:#f59e0b;background:#fff7ed}.mcard.done{border-color:#22b46e;background:#d7f8e6;opacity:.75}
 .artbox{border-radius:18px;overflow:hidden}
 .holdbtn{touch-action:none}
+.artbox{position:relative;border-radius:18px;overflow:hidden;box-shadow:0 8px 24px #0002}
+.hot{position:absolute;transform:translate(-50%,-50%);width:38px;height:38px;opacity:.9;border-radius:50%;border:3px solid #fff;background:#f59e0bcc;color:#fff;font-size:18px;cursor:pointer;box-shadow:0 0 0 0 #f59e0b99;animation:hotp 1.6s infinite;padding:0;z-index:2}
+.hot.seen{background:#22c55ecc;animation:none}
+@keyframes hotp{0%{box-shadow:0 0 0 0 #f59e0b99}70%{box-shadow:0 0 0 18px #f59e0b00}100%{box-shadow:0 0 0 0 #f59e0b00}}
+.hotlbl{position:absolute;transform:translate(-50%,-135%);background:#fff;border:3px solid #f59e0b;border-radius:16px;padding:4px 12px;font-weight:800;font-size:19px;max-width:60%;z-index:3;box-shadow:0 6px 16px #0003;pointer-events:none;line-height:1.6}
+.hothint{text-align:center;font-weight:800;font-size:20px;color:#b45309;margin-top:6px}
+.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sstage{display:flex;justify-content:center;min-height:250px;align-items:center}
+.scard{width:300px;background:#fff;border:5px solid #f59e0b;border-radius:22px;padding:8px;box-shadow:0 10px 0 #fcd34d,0 14px 30px #0003;cursor:grab;touch-action:none;user-select:none}
+.scard.dragging{position:fixed;z-index:50;transform:rotate(-3deg) scale(.85);cursor:grabbing}
+.scardt{text-align:center;font-size:25px;font-weight:800;margin-top:4px;line-height:1.6}
+.sbins{display:grid;grid-template-columns:repeat(var(--n),1fr);gap:10px;margin-top:14px}
+.sbin{background:#eef3ff;border:5px dashed #a5b4fc;border-radius:20px;padding:6px;text-align:center;cursor:pointer;transition:transform .15s}
+.sbin.hover{transform:scale(1.06);border-color:#f59e0b;background:#fff7ed}.sbin.ok{border-color:#22c55e;background:#dcfce7}
+.sbinname{font-size:22px;font-weight:800}.sbincnt{color:#16a34a;font-weight:900;font-size:18px;min-height:22px}
+.film{background:#0b1020;border-radius:26px;padding:12px;box-shadow:0 12px 40px #0006}
+.filmbar{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:8px}
+.fchip{width:38px;height:38px;border-radius:50%;border:3px solid #475569;background:#1e293b;color:#cbd5e1;font:inherit;font-weight:800;cursor:pointer}
+.fchip.on{background:#f59e0b;border-color:#fde68a;color:#111}.fchip.past{background:#334155;color:#fde68a}
+.filmstage{position:relative;border-radius:18px;overflow:hidden}
+.filmscene{animation:kb 14s ease-in-out both}
+.filmscene .artbox{box-shadow:none;border-radius:0}
+@keyframes kb{0%{transform:scale(1.12) translate(2%,1%);opacity:0}8%{opacity:1}100%{transform:scale(1) translate(0,0)}}
+.filmtitle{position:absolute;top:14px;right:14px;z-index:4;background:#000a;color:#fde68a;font-weight:900;font-size:28px;padding:4px 18px;border-radius:14px;animation:ftin 1.2s both}
+@keyframes ftin{from{opacity:0;transform:translateY(-20px)}to{opacity:1}}
+.filmsub{position:absolute;left:0;right:0;bottom:0;z-index:4;background:linear-gradient(transparent,#000c 40%);color:#fff;font-weight:800;font-size:26px;line-height:1.7;padding:40px 20px 14px;text-align:center;animation:ftin 1.5s .6s both}
+.film .btn{min-width:64px}
+.egylights .gv{animation:egl 1s both}
+.egylights .gv:nth-child(3n){animation-delay:.6s}.egylights .gv:nth-child(3n+1){animation-delay:1.2s}.egylights .gv:nth-child(3n+2){animation-delay:1.8s}
+@keyframes egl{from{opacity:0}to{opacity:1}}
+.grpanim .gv{animation:egl .8s both}
