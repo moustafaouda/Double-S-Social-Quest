@@ -42,10 +42,10 @@ function sortGame(id){const D=SORTS[id];const items=shuffle(D.items).slice(0,cal
 
 /* ---------- matching game: tap an item on the right, then its partner on the left ---------- */
 function matchGame(id){const D=MATCH[id];const pairs=D.pairs;let sel=null,done=0,mist=0;const L=shuffle(pairs.map((p,k)=>k)),R=shuffle(pairs.map((p,k)=>k));
- $('act').innerHTML=head(id)+`<div class="card pop">${sayBuzzy(D.t)}<div class="mgrid"><div>${L.map(k=>`<button class="mcard" data-s="a" data-k="${k}">${DEV[pairs[k][0]]()}<b>${pairs[k][1]}</b></button>`).join('')}</div><div>${R.map(k=>`<button class="mcard" data-s="b" data-k="${k}">${DEV[pairs[k][2]]()}<b>${pairs[k][3]}</b></button>`).join('')}</div></div><div id="fb"></div></div>`;
+ $('act').innerHTML=head(id)+`<div class="card pop">${sayBuzzy(D.t)}<div class="mgrid"><div>${L.map(k=>`<button class="mcard" data-s="a" data-k="${k}">${(D.pics||DEV)[pairs[k][0]]()}<b>${pairs[k][1]}</b></button>`).join('')}</div><div>${R.map(k=>`<button class="mcard" data-s="b" data-k="${k}">${(D.pics||DEV)[pairs[k][2]]()}<b>${pairs[k][3]}</b></button>`).join('')}</div></div><div id="fb"></div></div>`;
  speak(D.t);
  document.querySelectorAll('.mcard').forEach(b=>b.onclick=()=>{if(b.classList.contains('done'))return;const s=b.dataset.s,k=+b.dataset.k;
   if(!sel||sel.dataset.s===s){document.querySelectorAll('.mcard').forEach(x=>x.classList.remove('sel'));sel=b;b.classList.add('sel');SFX.click();speak(s==='a'?pairs[k][1]:pairs[k][3]);return}
-  if(+sel.dataset.k===k){[sel,b].forEach(x=>{x.classList.remove('sel');x.classList.add('done')});SFX.good();done++;const t=`قَدِيمًا: ${pairs[k][1]}، وَحَدِيثًا: ${pairs[k][3]}.`;factLine('fb',t);sel=null;if(done===pairs.length)later(()=>finish(id,mist<=1?3:mist<=3?2:1,'وَصَلْتَ كُلَّ أَدَاةٍ قَدِيمَةٍ بِالْجِهَازِ الْحَدِيثِ!'),2600)}
+  if(+sel.dataset.k===k){[sel,b].forEach(x=>{x.classList.remove('sel');x.classList.add('done')});SFX.good();done++;const t=D.say?D.say(pairs[k]):`قَدِيمًا: ${pairs[k][1]}، وَحَدِيثًا: ${pairs[k][3]}.`;factLine('fb',t);sel=null;if(done===pairs.length)later(()=>finish(id,mist<=1?3:mist<=3?2:1,D.end||'وَصَلْتَ كُلَّ أَدَاةٍ قَدِيمَةٍ بِالْجِهَازِ الْحَدِيثِ!'),2600)}
   else{mist++;SFX.bad();b.classList.add('shake');setTimeout(()=>b.classList.remove('shake'),500);speak(WRONG_TRY)}})}
 Object.assign(ACTS,{sort:sortGame,match:matchGame});
