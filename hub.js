@@ -1,8 +1,8 @@
 /* ---------- Social Quest hub: the units map ---------- */
 const WORLDS=[
- {id:'u1',url:'u1/',em:'🧭',ch:'الْوَحْدَةُ الْأُولَى',title:'اتِّجَاهَاتُنَا تَرْسُمُ خُطُوَاتِنَا',color:'#0ea5e9',ready:false},
+ {id:'u1',url:'u1/',em:'🧭',ch:'الْوَحْدَةُ الْأُولَى',title:'اتِّجَاهَاتُنَا تَرْسُمُ خُطُوَاتِنَا',color:'#0ea5e9',ready:true},
  {id:'u2',url:'u2/',em:'🏙️',ch:'الْوَحْدَةُ الثَّانِيَةُ',title:'مَدِينَتُنَا وَحَيَاتُنَا الْيَوْمِيَّةُ',color:'#8b5cf6',ready:true},
- {id:'u3',url:'u3/',em:'🇪🇬',ch:'الْوَحْدَةُ الثَّالِثَةُ',title:'مِصْرُ وَطَنُنَا',color:'#e11d48',ready:false},
+ {id:'u3',url:'u3/',em:'🇪🇬',ch:'الْوَحْدَةُ الثَّالِثَةُ',title:'مِصْرُ وَطَنُنَا',color:'#e11d48',ready:true},
  {id:'atlas',url:'atlas/',em:'🗺️',ch:'تَدْرِيبٌ عَلَى الْخَرَائِطِ',title:'أَطْلَسُ الْخَرَائِطِ',color:'#16a34a',ready:false}];
 function worldBadges(id){const p=wprog(id),g=((P().grand||{})[id])||{};const won=Object.keys(g).length;return `${p.boss?'🏆':''}${won>=6?'👑':''}`}
 function mapScreen(){const last=WORLDS.find(w=>w.id===S.lastWorld&&w.ready);
