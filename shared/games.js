@@ -42,7 +42,7 @@ function sortGame(id){const D=SORTS[id];const items=shuffle(D.items).slice(0,cal
 
 /* ---------- matching game: tap an item on the right, then its partner on the left ---------- */
 function matchGame(id){const D=MATCH[id];const pairs=D.pairs;let sel=null,done=0,mist=0;const L=shuffle(pairs.map((p,k)=>k)),R=shuffle(pairs.map((p,k)=>k));
- $('act').innerHTML=head(id)+`<div class="card pop">${sayBuzzy(D.t)}<div class="mgrid"><div>${L.map(k=>`<button class="mcard" data-s="a" data-k="${k}">${(D.pics||DEV)[pairs[k][0]]()}<b>${pairs[k][1]}</b></button>`).join('')}</div><div>${R.map(k=>`<button class="mcard" data-s="b" data-k="${k}">${(D.pics||DEV)[pairs[k][2]]()}<b>${pairs[k][3]}</b></button>`).join('')}</div></div><div id="fb"></div></div>`;
+ $('act').innerHTML=head(id)+`<div class="card pop">${sayBuzzy(D.t)}<div class="mgrid"><div>${L.map(k=>`<button class="mcard" data-s="a" data-k="${k}">${(D.pics||DEVS)[pairs[k][0]]()}<b>${pairs[k][1]}</b></button>`).join('')}</div><div>${R.map(k=>`<button class="mcard" data-s="b" data-k="${k}">${(D.pics||DEVS)[pairs[k][2]]()}<b>${pairs[k][3]}</b></button>`).join('')}</div></div><div id="fb"></div></div>`;
  speak(D.t);
  document.querySelectorAll('.mcard').forEach(b=>b.onclick=()=>{if(b.classList.contains('done'))return;const s=b.dataset.s,k=+b.dataset.k;
   if(!sel||sel.dataset.s===s){document.querySelectorAll('.mcard').forEach(x=>x.classList.remove('sel'));sel=b;b.classList.add('sel');SFX.click();speak(s==='a'?pairs[k][1]:pairs[k][3]);return}
