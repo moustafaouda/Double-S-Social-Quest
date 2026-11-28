@@ -1,5 +1,5 @@
 /* Social Quest offline helper: keeps the whole site and all recorded voices on the laptop. */
-const VER='b5706ae6c6';
+const VER='1c0e614188';
 const APP='ssq-app-'+VER;
 const SHELL=["index.html", "./", "hub.js", "icon-192.png", "icon-512.png", "manifest.webmanifest", "shared/clib.js", "shared/core.css", "shared/core.js", "shared/egymap.js", "shared/games.js", "shared/maps.js", "shared/worldmap.js", "u1/art.js", "u1/art2.js", "u1/art3.js", "u1/data.js", "u1/index.html", "u1/labs.js", "u1/lib.js", "u2/art.js", "u2/data.js", "u2/index.html", "u2/labs.js", "u3/art.js", "u3/art2.js", "u3/art3.js", "u3/data.js", "u3/index.html", "u3/labs.js", "u1/", "u2/", "u3/"];
 const WORLDS=['hub','u1','u2','u3','atlas'];

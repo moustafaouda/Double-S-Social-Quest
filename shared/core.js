@@ -81,12 +81,12 @@ function recFor(t){let r=AUD['ar|'+clean(t)];if(!r&&P())r=AUD['ar|'+clean(stripN
 function stopA(){if(curA){try{curA.pause()}catch(e){}curA=null}}
 const UQ=[];let spTok=0,warmed=false;
 let VB=0;const lockOn=()=>{VB++;document.body.classList.add('talking')},lockOff=()=>{VB=Math.max(0,VB-1);if(!VB)document.body.classList.remove('talking')};
-function speakP(t,o={}){const tok=actTok;return new Promise(res0=>{let settled=false,locked=false;const res=()=>{if(settled)return;settled=true;if(locked)lockOff();if(tok===actTok)res0()};
+function speakP0(t,o={}){const tok=actTok;return new Promise(res0=>{let settled=false,locked=false;const res=()=>{if(settled)return;settled=true;if(locked)lockOff();if(tok===actTok)res0()};
  if(!S.voice||(onBreak&&!o.brk)||!String(t).trim()){res();return}
  let rec=o.live?null:recFor(t);
  if(!rec&&!o.live&&!VLOAD.done){Promise.race([VREADY,new Promise(r=>setTimeout(r,6000))]).then(()=>{if(tok!==actTok){res();return}speakP(t,o).then(res)});return}
  if(rec)VSTAT.rec++;else if(!o.live){VSTAT.live++;VSTAT.miss.push(clean(t).slice(0,60));if(VSTAT.miss.length>8)VSTAT.miss.shift()}
- const lk=inActivity&&!o.nolock&&!o.brk;if(lk){locked=true;lockOn()}
+ const lk=inActivity&&!o.nolock&&!o.brk&&!DEV.on;if(lk){locked=true;lockOn()}
  keepAlive();
  if(rec){const my=++spTok;stopA();try{if(window.speechSynthesis&&(speechSynthesis.speaking||speechSynthesis.pending))speechSynthesis.cancel()}catch(e){}const a=new Audio('data:audio/ogg;base64,'+rec);a.volume=o.vol==null?1:Math.max(.1,Math.min(1,o.vol));curA=a;let safety=setTimeout(()=>fin(),20000);const fin=()=>{clearTimeout(safety);if(curA===a)curA=null;res()};a.onloadedmetadata=()=>{if(isFinite(a.duration)){clearTimeout(safety);safety=setTimeout(fin,a.duration*1000+2500)}};a.onended=fin;a.onerror=fin;a.onpause=()=>{if(!a.ended)fin()};const p=a.play();if(p&&p.catch)p.catch(fin);return}
  if(!window.speechSynthesis){res();return}stopA();
@@ -100,6 +100,18 @@ const FREE='.btn.sm.w,#pv,.snd,[data-free],#vload';let lastNudge=0;
 const blockTalk=e=>{if(!VB||!document.body.classList.contains('talking'))return;const t=e.target;if(!t.closest||!t.closest('#act')||t.closest(FREE))return;e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();if(e.type==='pointerdown'&&performance.now()-lastNudge>700){lastNudge=performance.now();let b=$('listen');if(!b){b=document.createElement('div');b.id='listen';document.body.appendChild(b)}b.innerHTML='👂 اسْتَمِعْ أَوَّلًا…';b.classList.remove('show');void b.offsetWidth;b.classList.add('show')}};
 ['pointerdown','mousedown','touchstart','click','dblclick'].forEach(ev=>document.addEventListener(ev,blockTalk,{capture:true,passive:false}));
 function speak(t,o={}){speakP(t,o);return null}
+/* ---------- developer mode (parent only, this browser tab only) ---------- */
+const DEV_PIN='2468';
+const DEV=(()=>{try{return JSON.parse(sessionStorage.getItem('sqDev'))||{}}catch(e){return {}}})();
+function devSave(){try{sessionStorage.setItem('sqDev',JSON.stringify(DEV))}catch(e){}}
+function speakP(t,o={}){const p=speakP0(t,o);return DEV.on&&DEV.fast?Promise.resolve():p}
+function devSkip(){try{stopA()}catch(e){}try{if(window.speechSynthesis)speechSynthesis.cancel()}catch(e){}}
+function devBar(){let b=document.getElementById('devbar');if(!DEV.on){if(b)b.remove();return}if(!b){b=document.createElement('div');b.id='devbar';b.setAttribute('data-free','1');b.style.cssText='position:fixed;left:12px;bottom:12px;z-index:10000;display:flex;gap:8px;align-items:center;background:#111827e6;color:#fde047;padding:8px 10px;border-radius:16px;font-weight:800;font-size:15px;box-shadow:0 6px 18px #0005';document.body.appendChild(b)}b.innerHTML=`<span>🛠️ وَضْعُ الْمُطَوِّرِ${DEV.fast?' ⚡':''}</span><button data-free onclick="devSkip()" style="font:inherit;font-size:18px;padding:6px 14px;border:0;border-radius:12px;background:#fde047;color:#111827;cursor:pointer">⏭ تَخَطَّ</button>`}
+function devToggle(){if(!DEV.on){const c=prompt('اكْتُبْ رَمْزَ وَلِيِّ الْأَمْرِ:');if(c===null)return;if(String(c).trim()!==DEV_PIN){alert('الرَّمْزُ غَيْرُ صَحِيحٍ.');return}DEV.on=1}else{DEV.on=0;DEV.fast=0}devSave();devBar();const o=$('set');if(o){o.remove();settings()}}
+function devFast(){DEV.fast=DEV.fast?0:1;devSave();devBar();const o=$('set');if(o){o.remove();settings()}}
+document.addEventListener('keydown',e=>{if(DEV.on&&e.key==='Escape')devSkip()});
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',devBar);else devBar();
+
 /* mission narration: one clip */
 const ORD=['الْأُولَى','الثَّانِيَةُ','الثَّالِثَةُ','الرَّابِعَةُ','الْخَامِسَةُ','السَّادِسَةُ','السَّابِعَةُ','الثَّامِنَةُ','التَّاسِعَةُ','الْعَاشِرَةُ'];
 function sayMission(i,t){return speakP(clean(t))}
@@ -249,6 +261,7 @@ function settings(){const p=P(),o=document.createElement('div');o.className='ove
  <p style="font-size:17px;margin:4px 0;color:#667">الْوَضْعُ الْهَادِئُ: جَوْلَاتٌ أَقْصَرُ، وَقُلُوبٌ أَكْثَرُ، وَلَا مُؤَقِّتَ لِلسُّرْعَةِ، وَاسْتِرَاحَةُ حَرَكَةٍ كُلَّ عَشْرِ دَقَائِقَ. وَضْعُ التَّحَدِّي: جَوْلَاتٌ أَطْوَلُ، وَمُؤَقِّتٌ لِلسُّرْعَةِ، وَاسْتِرَاحَةٌ كُلَّ عِشْرِينَ دَقِيقَةً.</p>
  ${row('مُؤَقِّتُ التَّرْكِيزِ وَاسْتِرَاحَةُ الْحَرَكَةِ',!p.timerOff,"setP('timerOff',"+!p.timerOff+")")}
  ${row('فَتْحُ كُلِّ الْأَنْشِطَةِ (لِوَلِيِّ الْأَمْرِ)',!!p.unlockAll,"setP('unlockAll',"+!p.unlockAll+")")}
+ ${row('🛠️ وَضْعُ الْمُطَوِّرِ (لِلِاخْتِبَارِ السَّرِيعِ)',!!DEV.on,'devToggle()')}${DEV.on?row('⚡ لَا تَنْتَظِرْ نِهَايَةَ الصَّوْتِ',!!DEV.fast,'devFast()'):''}
  <h3 style="margin-top:12px">🗣️ الصَّوْتُ (لِكُلِّ اللَّاعِبِينَ عَلَى هَذَا الْجِهَازِ)</h3>
  <div class="toggle"><span>الصَّوْتُ الْعَرَبِيُّ</span>${vsel}<button class="btn sm b" onclick="speak('مَرْحَبًا! هَيَّا نَتَعَلَّمْ مَعًا.',{live:1})">▶ تَجْرِبَةٌ</button></div>
  <div class="toggle"><span>سُرْعَةُ الصَّوْتِ <b id="ra">${S.rateAr}</b></span><input type="range" min=".6" max="1.1" step=".05" value="${S.rateAr}" oninput="S.rateAr=+this.value;$('ra').textContent=this.value;save()"></div>
